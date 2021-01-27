@@ -31,3 +31,7 @@ Devices:
 # Get MAC address:
 sudo hcitool lescan --duplicate  
 
+It can read data from LYWSDCGQ, has to be upgraded to use with LYWSD03MMC, too!  
+Sources:  
+https://github.com/JsBergbau/MiTemperature2  
+https://github.com/ratcashdev/mitemp
