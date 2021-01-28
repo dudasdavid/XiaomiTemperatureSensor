@@ -1,8 +1,95 @@
-from mitemp_bt_poller import MiTempBtPoller
-from btlewrap.gatttool import GatttoolBackend
+#!/usr/bin/env python3
 
-poller = MiTempBtPoller('58:2D:34:38:3C:E2', GatttoolBackend)
+from LYWSD03MMC_handler import LYWSD03MMC_delegate
+from LYWSDCGQ_handler import LYWSDCGQ_delegate
 
-print(poller.parameter_value("temperature"))
-print(poller.parameter_value("humidity"))
-print(poller.parameter_value("battery"))
+from bluepy.btle import Peripheral
+import bluepy
+import time
+import queue
+from SimpleLogger import SimpleLogger
+
+class LYWSD03MMC_reader:
+    def __init__(self, mac):
+        self.mac = mac
+        self.p = Peripheral(self.mac)
+        self.p.disconnect()
+        self.q = queue.Queue()
+        self.logger = SimpleLogger(verbose = True, loggerName = f"Sensor - {mac}")
+
+    def handle_temp_hum_value(self):
+        while True:
+            if self.p.waitForNotifications(10.0):
+                break
+
+    def read_data(self):
+        self.logger.log(f"Start reading data from: {self.mac}")
+        try:
+            self.p.connect(self.mac)
+            self.p.writeCharacteristic(0x0038, b'\x01\x00', True)      #enable notifications of Temperature, Humidity and Battery voltage
+            self.p.writeCharacteristic(0x0046, b'\xf4\x01\x00', True)
+            self.p.withDelegate(LYWSD03MMC_delegate(self.q))
+            self.handle_temp_hum_value()
+            self.p.disconnect()
+            self.logger.log(f"Reading was successful!", messageType = "OK")
+        except bluepy.btle.BTLEDisconnectError as e:
+            self.logger.log(f"BLE disconnect error: {e}", messageType = "ERROR", forcePrint = True)
+
+        self.process_queue()
+
+    def process_queue(self):
+        qsize = self.q.qsize()
+        self.logger.log(f"Queue size: {qsize}")
+        if qsize > 0:
+            data = self.q.get()
+            self.logger.log(f"Data from {self.mac}: {data}")
+            
+
+class LYWSDCGQ_reader:
+    def __init__(self, mac):
+        self.mac = mac
+        self.p = Peripheral(self.mac)
+        self.p.disconnect()
+        self.q = queue.Queue()
+        self.logger = SimpleLogger(verbose = True, loggerName = f"Sensor - {mac}")
+
+    def handle_temp_hum_value(self):
+        while True:
+            if self.p.waitForNotifications(10.0):
+                break
+
+    def read_data(self):
+        self.logger.log(f"Start reading data from: {self.mac}")
+        try:
+            self.p.connect(self.mac)
+            self.p.writeCharacteristic(0x0010, b'\x01\x00', True)      #enable notifications of Temperature, Humidity and Battery voltage
+            self.p.withDelegate(LYWSDCGQ_delegate(self.q))
+            self.handle_temp_hum_value()
+            self.p.disconnect()
+            self.logger.log(f"Reading was successful!", messageType = "OK")
+        except bluepy.btle.BTLEDisconnectError as e:
+            self.logger.log(f"BLE disconnect error: {e}", messageType = "ERROR", forcePrint = True)
+
+        self.process_queue()
+
+    def process_queue(self):
+        qsize = self.q.qsize()
+        self.logger.log(f"Queue size: {qsize}")
+        if qsize > 0:
+            data = self.q.get()
+            self.logger.log(f"Data from {self.mac}: {data}")
+
+        
+
+sensor1 = LYWSD03MMC_reader('A4:C1:38:EA:1D:CC')
+#sensor2 = LYWSDCGQ_reader('58:2D:34:38:3C:E2')
+
+for i in range(10):
+    sensor1.read_data()
+    time.sleep(20)
+
+
+#poller = MiTempBtPoller('58:2D:34:38:3C:E2', GatttoolBackend)
+#print(poller.parameter_value("temperature"))
+#print(poller.parameter_value("humidity"))
+#print(poller.parameter_value("battery"))
