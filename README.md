@@ -51,6 +51,8 @@ sudo hcitool lescan
 ### My MAC addresses:  
 `'58:2D:34:38:3C:E2'` - LYWSDCGQ  
 `'A4:C1:38:EA:1D:CC'` - LYWSD03MMC kitchen  
+`'A4:C1:38:5B:10:E2'` - LYWSD03MMC outside  
+`'A4:C1:38:D2:7A:00'` - LYWSD03MMC filament  
 
 ## Current status:
 It can read data from LYWSDCGQ, has to be upgraded to use with LYWSD03MMC, too!  
