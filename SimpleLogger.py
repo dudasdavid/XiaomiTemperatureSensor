@@ -30,6 +30,8 @@ class SimpleLogger():
             # Let's use some ANSI escape sequences to color the texts
             if messageType == "WARN":
                 print(f"[{timeStamp}] [{bcolors.WARNING}{messageType.rjust(5)}{bcolors.ENDC}] {s}")
+            elif messageType == "DEBUG":
+                print(f"[{timeStamp}] [{bcolors.WARNING}{messageType.rjust(5)}{bcolors.ENDC}] {s}")
             elif messageType == "ERROR":
                 print(f"[{timeStamp}] [{bcolors.FAIL}{messageType.rjust(5)}{bcolors.ENDC}] {s}")
             elif messageType == "OK":
