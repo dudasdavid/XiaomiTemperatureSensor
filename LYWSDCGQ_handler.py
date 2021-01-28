@@ -21,9 +21,9 @@ class LYWSDCGQ_delegate(DefaultDelegate):
         for dataitem in data.split(' '):
             dataparts = dataitem.split('=')
             if dataparts[0] == 'T':
-                res[MI_TEMPERATURE] = float(dataparts[1])
+                res["temp"] = float(dataparts[1])
             elif dataparts[0] == 'H':
-                res[MI_HUMIDITY] = float(dataparts[1])
+                res["hum"] = float(dataparts[1])
 
         timeStamp = datetime.now().strftime(timestampFormat)
         self.queue.put([timeStamp, res])
