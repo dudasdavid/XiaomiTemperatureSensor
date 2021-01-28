@@ -54,7 +54,14 @@ sudo hcitool lescan
 `'A4:C1:38:D2:7A:00'` - LYWSD03MMC filament  
 
 ## Current status:
-It can read data from LYWSDCGQ, has to be upgraded to use with LYWSD03MMC, too!  
+It can read data from LYWSDCGQ and LYWSD03MMC.  
+
+## How to use it?
+Setup your sensor MAC addresses in `xiaomi_reader.py`.  
+Run:  
+```bash
+python3 xiaomi_reader.py
+```
 
 ## Sources:  
 https://github.com/JsBergbau/MiTemperature2  
