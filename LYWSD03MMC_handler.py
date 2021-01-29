@@ -7,21 +7,22 @@ from SimpleLogger import SimpleLogger
 from datetime import datetime
 import queue
 
-timestampFormat ='%Y.%m.%d-%H:%M:%S'
+timestampFormat ='%d/%m/%Y-%H:%M:%S'
 
 class LYWSD03MMC_reader:
     def __init__(self, mac, name):
         self.mac = mac
         self.name = name
-        self.logger = SimpleLogger(verbose = False, loggerName = f"Sensor-{name}-{mac}")
+        self.logger = SimpleLogger(verbose = True, loggerName = f"Sensor-{name}-{mac}")
 
         while 1:
             try:
                 self.p = Peripheral(self.mac)
                 self.p.disconnect()
+                self.logger.log(f"BLE connected to {self.name} ({self.mac})!", messageType = "OK")
                 break
             except bluepy.btle.BTLEDisconnectError as e:
-                self.logger.log(f"BLE disconnect error: {e} on {self.name} ({self.mac})", messageType = "ERROR", forcePrint = True)
+                self.logger.log(f"BLE disconnect error: {e} on {self.name} ({self.mac})", messageType = "ERROR")
 
         self.q = queue.Queue()
         
@@ -42,7 +43,7 @@ class LYWSD03MMC_reader:
             self.p.disconnect()
             self.logger.log(f"Reading was successful on {self.name} ({self.mac})!", messageType = "OK")
         except bluepy.btle.BTLEDisconnectError as e:
-            self.logger.log(f"BLE disconnect error: {e} on {self.name} ({self.mac})", messageType = "ERROR", forcePrint = True)
+            self.logger.log(f"BLE disconnect error: {e} on {self.name} ({self.mac})", messageType = "ERROR")
 
         return self.process_queue()
 
@@ -63,7 +64,7 @@ class LYWSD03MMC_delegate(DefaultDelegate):
 
     def handleNotification(self, cHandle, data):
         if data is None:
-            self.logger.log(f"Empty data from {self.name} ({self.mac})", messageType = "WARN", forcePrint = True)
+            self.logger.log(f"Empty data from {self.name} ({self.mac})", messageType = "WARN")
             return
         temperature = round(int.from_bytes(data[0:2],byteorder='little',signed=True)/100, 2)
         #print(f"Temperature: {temperature}")
