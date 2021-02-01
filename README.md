@@ -24,9 +24,9 @@ sudo hciattach /dev/ttyAMA0 bcm43xx 921600 -
 ```
 Output should look like this:
 ```console
-ubuntu@ubuntu:~/git/XiaomiTemperatureSensor$ sudo ln -s /lib/firmware /etc/firmware
 ubuntu@ubuntu:~/git/XiaomiTemperatureSensor$ sudo hcitool dev
 Devices:
+ubuntu@ubuntu:~/git/XiaomiTemperatureSensor$ sudo ln -s /lib/firmware /etc/firmware
 ubuntu@ubuntu:~/git/XiaomiTemperatureSensor$ sudo hciattach /dev/ttyAMA0 bcm43xx 921600 -
 bcm43xx_init
 Set Controller UART speed to 921600 bit/s
@@ -58,6 +58,7 @@ It can read data from LYWSDCGQ and LYWSD03MMC.
 
 ## How to use it?
 Setup your sensor MAC addresses in `xiaomi_reader.py`.  
+
 Run:  
 ```bash
 python3 xiaomi_reader.py
