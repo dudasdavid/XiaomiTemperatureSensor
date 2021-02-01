@@ -11,7 +11,7 @@ import threading
 
 def watchdog():
     watchdogLogger = SimpleLogger(verbose = True, loggerName = f"Watchdog")
-    watchdogTimeout = 240 # 4 minutes timeout
+    watchdogTimeout = 360 # 6 minutes timeout
     startTime = time.time()
     watchdogLogger.log(f"Watchdog started with {watchdogTimeout/60.0} minute timeout.", messageType = "DEBUG")
     while 1:
