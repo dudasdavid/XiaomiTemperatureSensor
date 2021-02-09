@@ -15,6 +15,8 @@ class LYWSDCGQ_reader:
         self.name = name
         self.logger = SimpleLogger(verbose = True, loggerName = f"Sensor-{name}-{mac}")
 
+        self.retryCounter = 0
+        self.maxRetryCounter = 5
         while 1:
             try:
                 self.p = Peripheral(self.mac)
@@ -23,7 +25,11 @@ class LYWSDCGQ_reader:
                 break
             except bluepy.btle.BTLEDisconnectError as e:
                 self.logger.log(f"BLE disconnect error: {e} on {self.name} ({self.mac})", messageType = "ERROR")
-
+                self.retryCounter += 1
+                if self.retryCounter > self.maxRetryCounter:
+                    self.logger.log(f"Couldn't connect {self.maxRetryCounter} times to {self.name} ({self.mac})", messageType = "ERROR")
+                    break
+                
         self.q = queue.Queue()
         
 

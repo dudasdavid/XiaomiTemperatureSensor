@@ -44,6 +44,9 @@ if __name__ == "__main__":
     sensor3 = LYWSD03MMC_reader('A4:C1:38:D2:7A:00', "filament")
     sensor4 = LYWSDCGQ_reader('58:2D:34:38:3C:E2', "bathroom")
 
+    maxRetryCounter = 5
+
+    retryCounter = 0
     while 1:
         ret = sensor1.read_data()
         if ret is not None:
@@ -52,7 +55,14 @@ if __name__ == "__main__":
             break
         else:
             logger.log(f"Empty data from {sensor1.name} ({sensor1.mac}), retrying...", messageType = "WARN")
+            retryCounter+=1
+            if retryCounter > maxRetryCounter:
+                sensor1JSON=f'{sensor1.name}-temperature=0&{sensor1.name}-humidity=0&{sensor1.name}-battery=0'
+                logger.log(f"Couldn't connect to the sensor {maxRetryCounter} times to {sensor1.name} ({sensor1.mac})!", messageType = "ERROR")
+                break
 
+
+    retryCounter = 0
     while 1:
         ret = sensor2.read_data()
         if ret is not None:
@@ -61,7 +71,13 @@ if __name__ == "__main__":
             break
         else:
             logger.log(f"Empty data from {sensor2.name} ({sensor2.mac}), retrying...", messageType = "WARN")
+            retryCounter+=1
+            if retryCounter > maxRetryCounter:
+                sensor2JSON=f'{sensor2.name}-temperature=0&{sensor2.name}-humidity=0&{sensor2.name}-battery=0'
+                logger.log(f"Couldn't connect to the sensor {maxRetryCounter} times to {sensor2.name} ({sensor2.mac})!", messageType = "ERROR")
+                break
 
+    retryCounter = 0
     while 1:
         ret = sensor3.read_data()
         if ret is not None:
@@ -70,7 +86,13 @@ if __name__ == "__main__":
             break
         else:
             logger.log(f"Empty data from {sensor3.name} ({sensor3.mac}), retrying...", messageType = "WARN")
+            retryCounter+=1
+            if retryCounter > maxRetryCounter:
+                sensor3JSON=f'{sensor3.name}-temperature=0&{sensor3.name}-humidity=0&{sensor3.name}-battery=0'
+                logger.log(f"Couldn't connect to the sensor {maxRetryCounter} times to {sensor3.name} ({sensor3.mac})!", messageType = "ERROR")
+                break
 
+    retryCounter = 0
     while 1:
         ret = sensor4.read_data()
         if ret is not None:
@@ -79,7 +101,11 @@ if __name__ == "__main__":
             break
         else:
             logger.log(f"Empty data from {sensor4.name} ({sensor4.mac}), retrying...", messageType = "WARN")
-
+            retryCounter+=1
+            if retryCounter > maxRetryCounter:
+                sensor4JSON=f'{sensor4.name}-temperature=0&{sensor4.name}-humidity=0&{sensor4.name}-battery=0'
+                logger.log(f"Couldn't connect to the sensor {maxRetryCounter} times to {sensor4.name} ({sensor4.mac})!", messageType = "ERROR")
+                break
 
     upload_data = f"{sensor1JSON}&{sensor2JSON}&{sensor3JSON}&{sensor4JSON}"
 
