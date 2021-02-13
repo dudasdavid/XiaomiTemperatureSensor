@@ -44,7 +44,7 @@ if __name__ == "__main__":
     sensor3 = LYWSD03MMC_reader('A4:C1:38:D2:7A:00', "filament")
     sensor4 = LYWSDCGQ_reader('58:2D:34:38:3C:E2', "bathroom")
 
-    maxRetryCounter = 5
+    maxRetryCounter = 3
 
     retryCounter = 0
     while 1:

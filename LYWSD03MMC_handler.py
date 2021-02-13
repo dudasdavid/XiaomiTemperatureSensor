@@ -16,7 +16,7 @@ class LYWSD03MMC_reader:
         self.logger = SimpleLogger(verbose = True, loggerName = f"Sensor-{name}-{mac}")
 
         self.retryCounter = 0
-        self.maxRetryCounter = 5
+        self.maxRetryCounter = 3
         while 1:
             try:
                 self.p = Peripheral(self.mac)
