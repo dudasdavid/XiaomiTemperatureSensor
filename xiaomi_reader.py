@@ -110,3 +110,7 @@ if __name__ == "__main__":
     upload_data = f"{sensor1JSON}&{sensor2JSON}&{sensor3JSON}&{sensor4JSON}"
 
     subprocess.call(["bash", "./send_data.bash", upload_data])
+
+    # Gracefully stop watchdog
+    shutdownFlag.set()
+    watchdogThread.join()
