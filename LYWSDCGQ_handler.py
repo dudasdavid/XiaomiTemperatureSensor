@@ -16,7 +16,9 @@ class LYWSDCGQ_reader:
         self.logger = SimpleLogger(verbose = True, loggerName = f"Sensor-{name}-{mac}")
 
         self.retryCounter = 0
-        self.maxRetryCounter = 3
+        self.maxRetryCounter = 2
+
+        self.p = None
         while 1:
             try:
                 self.p = Peripheral(self.mac)
@@ -40,6 +42,10 @@ class LYWSDCGQ_reader:
 
     def read_data(self):
         self.logger.log(f"Start reading data from {self.name} ({self.mac})", messageType = "DEBUG")
+
+        if self.p == None:
+            return None
+
         try:
             self.p.connect(self.mac)
             #firmware = self.p.readCharacteristic(0x0024)

@@ -17,6 +17,7 @@ class LYWSD03MMC_reader:
 
         self.retryCounter = 0
         self.maxRetryCounter = 3
+        self.p = None
         while 1:
             try:
                 self.p = Peripheral(self.mac)
@@ -40,6 +41,10 @@ class LYWSD03MMC_reader:
 
     def read_data(self):
         self.logger.log(f"Start reading data from {self.name} ({self.mac})", messageType = "DEBUG")
+        
+        if self.p == None:
+            return None
+
         try:
             self.p.connect(self.mac)
             self.p.writeCharacteristic(0x0038, b'\x01\x00', True)      #enable notifications of Temperature, Humidity and Battery voltage
