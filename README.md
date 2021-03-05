@@ -8,6 +8,8 @@ sudo apt-get install libglib2.0-dev
 sudo apt install python3-pip  
 pip3 install pybluez  
 pip3 install bluepy  
+pip3 install google-auth==1.27.0
+pip3 install firebase-admin==4.5.2
 ```
 
 Bluetooth LE Scanning needs root privileges, to run the script as normal user, execute:  
@@ -62,6 +64,11 @@ Setup your sensor MAC addresses in `xiaomi_reader.py`.
 Run:  
 ```bash
 python3 xiaomi_reader.py
+```
+
+or
+```bash
+bash run.bash
 ```
 
 ## Sources:  
