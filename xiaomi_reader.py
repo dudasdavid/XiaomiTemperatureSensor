@@ -149,12 +149,17 @@ if __name__ == "__main__":
     #example timestamp: "20201204-122331"
     timestampFormat ='%Y%m%d-%H%M%S'
 
-    collection.add({'date': datetime.now(), 'timestamp': datetime.now().strftime(timestampFormat), 
-                    'kitchen_temp': kitchen_temp, 'kitchen_hum': kitchen_hum, 'kitchen_bat': kitchen_bat,
-                    'bathroom_temp': bathroom_temp, 'bathroom_hum': bathroom_hum, 'bathroom_bat': bathroom_bat,
-                    'outside_temp': outside_temp, 'outside_hum': outside_hum, 'outside_bat': outside_bat,
-                    'filament_temp': filament_temp, 'filament_hum': filament_hum, 'filament_bat': filament_bat
-    })
+    logger.log(f"Uploading data to Firestore.")
+    try:
+        collection.add({'date': datetime.now(), 'timestamp': datetime.now().strftime(timestampFormat), 
+                        'kitchen_temp': kitchen_temp, 'kitchen_hum': kitchen_hum, 'kitchen_bat': kitchen_bat,
+                        'bathroom_temp': bathroom_temp, 'bathroom_hum': bathroom_hum, 'bathroom_bat': bathroom_bat,
+                        'outside_temp': outside_temp, 'outside_hum': outside_hum, 'outside_bat': outside_bat,
+                        'filament_temp': filament_temp, 'filament_hum': filament_hum, 'filament_bat': filament_bat
+        })
+        logger.log(f"Successful upload to Firestore.", messageType = "OK")
+    except Exception as e:
+        logger.log(f"Error during uploading data to Firestore: {e}", messageType = "ERROR")
 
     # Gracefully stop watchdog
     shutdownFlag.set()
