@@ -16,7 +16,7 @@ class LYWSDCGQ_reader:
         self.logger = SimpleLogger(verbose = True, loggerName = f"Sensor-{name}-{mac}")
 
         self.retryCounter = 0
-        self.maxRetryCounter = 2
+        self.maxRetryCounter = 4
 
         self.p = None
         while 1:

@@ -62,7 +62,7 @@ if __name__ == "__main__":
     filament_hum  = 0
     filament_bat  = 0
 
-    maxRetryCounter = 3
+    maxRetryCounter = 4
 
     retryCounter = 0
     while 1:
