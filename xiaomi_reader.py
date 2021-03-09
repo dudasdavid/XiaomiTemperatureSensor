@@ -49,18 +49,18 @@ if __name__ == "__main__":
     sensor4 = LYWSDCGQ_reader('58:2D:34:38:3C:E2', "bathroom")
 
     # Default values
-    kitchen_temp  = 0
-    kitchen_hum   = 0
-    kitchen_bat   = 0
-    bathroom_temp = 0
-    bathroom_hum  = 0
-    bathroom_bat  = 0
-    outside_temp  = 0
-    outside_hum   = 0
-    outside_bat   = 0
-    filament_temp = 0
-    filament_hum  = 0
-    filament_bat  = 0
+    kitchen_temp  = "nan"
+    kitchen_hum   = "nan"
+    kitchen_bat   = "nan"
+    bathroom_temp = "nan"
+    bathroom_hum  = "nan"
+    bathroom_bat  = "nan"
+    outside_temp  = "nan"
+    outside_hum   = "nan"
+    outside_bat   = "nan"
+    filament_temp = "nan"
+    filament_hum  = "nan"
+    filament_bat  = "nan"
 
     maxRetryCounter = 4
 
