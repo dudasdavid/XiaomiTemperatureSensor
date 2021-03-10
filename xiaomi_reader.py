@@ -11,7 +11,7 @@ import threading
 import firebase_admin
 from firebase_admin import credentials, firestore
 
-from datetime import datetime
+from datetime import datetime, timedelta
 
 def watchdog():
     watchdogLogger = SimpleLogger(verbose = True, loggerName = f"Watchdog")
@@ -137,8 +137,6 @@ if __name__ == "__main__":
                 logger.log(f"Couldn't connect to the sensor {maxRetryCounter} times to {sensor4.name} ({sensor4.mac})!", messageType = "ERROR")
                 break
 
-    #upload_data = f"{sensor1JSON}&{sensor2JSON}&{sensor3JSON}&{sensor4JSON}"
-
     # Connect to Firebase Firestore
     cred = credentials.Certificate("home-sensors-credentials.json")
     firebase_admin.initialize_app(cred)
@@ -150,16 +148,45 @@ if __name__ == "__main__":
     timestampFormat ='%Y%m%d-%H%M%S'
 
     logger.log(f"Uploading data to Firestore.")
+
+    # Checking the latest timestamp in Firestore
+    logger.log(f"Check the latest sample in Firestore.")
+    date_time_obj = None
     try:
-        collection.add({'date': datetime.now(), 'timestamp': datetime.now().strftime(timestampFormat), 
-                        'kitchen_temp': kitchen_temp, 'kitchen_hum': kitchen_hum, 'kitchen_bat': kitchen_bat,
-                        'bathroom_temp': bathroom_temp, 'bathroom_hum': bathroom_hum, 'bathroom_bat': bathroom_bat,
-                        'outside_temp': outside_temp, 'outside_hum': outside_hum, 'outside_bat': outside_bat,
-                        'filament_temp': filament_temp, 'filament_hum': filament_hum, 'filament_bat': filament_bat
-        })
-        logger.log(f"Successful upload to Firestore.", messageType = "OK")
+        result = collection.order_by('date',direction='DESCENDING').limit(1).get()
+        firestore_latest = result[0].to_dict()['timestamp']
+        logger.log(f"Latest timestamp in Firestore: {firestore_latest}")
+        date_time_obj = datetime.strptime(firestore_latest, timestampFormat)
     except Exception as e:
-        logger.log(f"Error during uploading data to Firestore: {e}", messageType = "ERROR")
+        logger.log(f"Error during downloading data from Firebase: {e}", messageType = "ERROR")
+
+    if date_time_obj == None or date_time_obj + timedelta(hours = 2) < datetime.now():
+        logger.log(f"Latest  imestamp is None or too old (now: {datetime.now().strftime(timestampFormat)})")
+        logger.log(f"Uploading NaN.")
+
+        try:
+            collection.add({'date': datetime.now(), 'timestamp': datetime.now().strftime(timestampFormat), 
+                            'kitchen_temp': "nan", 'kitchen_hum': "nan", 'kitchen_bat': "nan",
+                            'bathroom_temp': "nan", 'bathroom_hum': "nan", 'bathroom_bat': "nan",
+                            'outside_temp': "nan", 'outside_hum': "nan", 'outside_bat': "nan",
+                            'filament_temp': "nan", 'filament_hum': "nan", 'filament_bat': "nan"
+            })
+            logger.log(f"Successful upload to Firestore.", messageType = "OK")
+        except Exception as e:
+            logger.log(f"Error during uploading data to Firestore: {e}", messageType = "ERROR")
+
+    else:
+        logger.log(f"Latest  imestamp is newer than 2 hours. Uploading sensor data.")
+        try:
+            collection.add({'date': datetime.now(), 'timestamp': datetime.now().strftime(timestampFormat), 
+                            'kitchen_temp': kitchen_temp, 'kitchen_hum': kitchen_hum, 'kitchen_bat': kitchen_bat,
+                            'bathroom_temp': bathroom_temp, 'bathroom_hum': bathroom_hum, 'bathroom_bat': bathroom_bat,
+                            'outside_temp': outside_temp, 'outside_hum': outside_hum, 'outside_bat': outside_bat,
+                            'filament_temp': filament_temp, 'filament_hum': filament_hum, 'filament_bat': filament_bat
+            })
+            logger.log(f"Successful upload to Firestore.", messageType = "OK")
+        except Exception as e:
+            logger.log(f"Error during uploading data to Firestore: {e}", messageType = "ERROR")
 
     # Gracefully stop watchdog
     shutdownFlag.set()
